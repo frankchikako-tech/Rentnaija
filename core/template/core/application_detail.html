@@ -1,0 +1,6 @@
+<h1>Rental Application Details</h1>
+<p>Property: {{ application.property.title }}</p>
+<p>Status: {{ application.status }}</p>
+<p>Tenant: {{ application.tenant.username }}</p>
+<p>Landlord: {{ application.property.landlord.username }}</p>
+<a href="?generate_pdf=1">Download Digital Lease</a>

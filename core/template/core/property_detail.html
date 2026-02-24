@@ -1,0 +1,8 @@
+<h1>{{ property.title }}</h1>
+<p>{{ property.description }}</p>
+<p>Price: ₦{{ property.price }}</p>
+{% if user.is_authenticated and user.role == 'tenant' %}
+<form method="post">{% csrf_token %}
+    <button type="submit">Apply for Rental</button>
+</form>
+{% endif %}

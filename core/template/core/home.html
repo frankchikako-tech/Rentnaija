@@ -1,0 +1,8 @@
+<h1>RentNaija Properties</h1>
+{% for property in properties %}
+<div>
+    <h2>{{ property.title }} - ₦{{ property.price }}</h2>
+    <p>{{ property.description }}</p>
+    <a href="{% url 'property_detail' property.id %}">View Details</a>
+</div>
+{% endfor %}

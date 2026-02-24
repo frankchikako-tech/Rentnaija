@@ -1,9 +1,11 @@
 from django.contrib import admin
+from django.contrib.admin.sites import AlreadyRegistered
 from .models import User, Property, RentalApplication, Payment
 from .models import Message, AgentCommission
-admin.site.register(User)
-admin.site.register(Property)
-admin.site.register(RentalApplication)
-admin.site.register(Payment)
-admin.site.register(Message)
-admin.site.register(AgentCommission)
+
+# Register models safely to avoid duplicate-registration warnings
+for model in (User, Property, RentalApplication, Payment, Message, AgentCommission):
+	try:
+		admin.site.register(model)
+	except AlreadyRegistered:
+		pass

@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>RentNaija</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f5f7fa;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #0a2540;
+        }
+
+        .property {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<h1>🏠 RentNaija — Verified Rental Marketplace</h1>
+
+<h3>Available Properties</h3>
+
+{% for property in properties %}
+    <div class="property">
+        <h4>{{ property.title }}</h4>
+        <p>Location: {{ property.location }}</p>
+        <p>Rent: ₦{{ property.price }}</p>
+    </div>
+{% empty %}
+    <p>No properties yet.</p>
+{% endfor %}
+
+</body>
+</html>

@@ -34,13 +34,6 @@ class RentalApplication(models.Model):
     status = models.CharField(max_length=10, choices=status_choices, default='pending')
     applied_at = models.DateTimeField(auto_now_add=True)
 
-# Placeholder for Payment
-class Payment(models.Model):
-    application = models.OneToOneField(RentalApplication, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    confirmed = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')

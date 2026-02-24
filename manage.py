@@ -2,6 +2,14 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import warnings
+
+# suppress warning about models being registered twice when Django reloads modules
+warnings.filterwarnings(
+    'ignore',
+    r"Model 'core\.payment' was already registered",
+    category=RuntimeWarning,
+)
 
 
 def main():

@@ -3,6 +3,9 @@ from .models import Property, RentalApplication, Payment, User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
+from .models import Message
+from django.contrib.auth.decorators import login_required
+
 
 # Home page: list verified properties
 def home(request):
@@ -40,3 +43,52 @@ def application_detail(request, app_id):
         c.save()
         return response
     return render(request, 'core/application_detail.html', {'application': app})
+# Landlord dashboard: view own properties and applications
+@login_required
+def landlord_dashboard(request):
+    if request.user.role != 'landlord':
+        return HttpResponse(status=403)
+    properties = Property.objects.filter(landlord=request.user)
+    applications = RentalApplication.objects.filter(property__landlord=request.user)
+    return render(request, 'core/landlord_dashboard.html', {
+        'properties': properties,
+        'applications': applications,
+    })
+
+
+# Agent dashboard (optional placeholder)
+@login_required
+def agent_dashboard(request):
+    if request.user.role != 'agent':
+        return HttpResponse(status=403)
+    # future enhancements: show promoted properties, commissions, etc.
+    return render(request, 'core/agent_dashboard.html')
+@login_required
+def messages_view(request, user_id):
+    receiver = User.objects.get(id=user_id)
+
+    if request.method == "POST":
+        Message.objects.create(
+            sender=request.user,
+            receiver=receiver,
+            content=request.POST.get("content")
+        )
+
+    chats = Message.objects.filter(
+        sender__in=[request.user, receiver],
+        receiver__in=[request.user, receiver]
+    ).order_by('timestamp')
+
+    return render(request, "core/messages.html", {
+        "chats": chats,
+        "receiver": receiver
+    })
+@login_required
+def confirm_payment(request, payment_id):
+    payment = Payment.objects.get(id=payment_id)
+
+    if request.user.role == "tenant":
+        payment.confirmed = True
+        payment.save()
+
+    return redirect('application_detail', app_id=payment.application.id)

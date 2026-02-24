@@ -1,4 +1,14 @@
-<h1>RentNaija Properties</h1>
+﻿<h1>RentNaija Properties</h1>
+{% if user.is_authenticated %}
+    {% if user.role == 'landlord' %}
+        <p><a href="{% url 'landlord_dashboard' %}">Go to your landlord dashboard</a></p>
+    {% elif user.role == 'agent' %}
+        <p><a href="{% url 'agent_dashboard' %}">Go to your agent dashboard</a></p>
+    {% elif user.role == 'tenant' %}
+        <p>Welcome back, {{ user.username }}!</p>
+    {% endif %}
+{% endif %}
+
 {% for property in properties %}
 <div>
     <h2>{{ property.title }} - ₦{{ property.price }}</h2>

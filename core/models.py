@@ -40,3 +40,31 @@ class Payment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     confirmed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, null=True, blank=True)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.sender} -> {self.receiver}"
+    
+class AgentCommission(models.Model):
+    agent = models.ForeignKey(User, on_delete=models.CASCADE)
+    application = models.ForeignKey(RentalApplication, on_delete=models.CASCADE)
+    commission_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    paid = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.agent} commission"
+    
+class Payment(models.Model):
+    application = models.OneToOneField(RentalApplication, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    confirmed = models.BooleanField(default=False)
+    released_to_landlord = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+   

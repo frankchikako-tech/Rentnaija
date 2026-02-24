@@ -1,0 +1,23 @@
+<h1>Landlord Dashboard</h1>
+<p>Welcome, {{ request.user.username }}!</p>
+
+<h2>Your Properties</h2>
+<ul>
+{% for prop in properties %}
+    <li>{{ prop.title }} - ₦{{ prop.price }} ({{ prop.city }}) - Verified: {{ prop.verified }}</li>
+{% empty %}
+    <li>You haven't added any properties yet.</li>
+{% endfor %}
+</ul>
+
+<h2>Rental Applications</h2>
+<ul>
+{% for app in applications %}
+    <li>
+        {{ app.property.title }} &mdash; {{ app.tenant.username }} ({{ app.status }})
+        <a href="{% url 'application_detail' app.id %}">View</a>
+    </li>
+{% empty %}
+    <li>No applications for your properties.</li>
+{% endfor %}
+</ul>

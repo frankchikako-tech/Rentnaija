@@ -1,0 +1,9 @@
+<h1>Agent Dashboard</h1>
+
+{% for c in commissions %}
+<p>
+Property: {{ c.application.property.title }} |
+Commission: ₦{{ c.commission_amount }} |
+Paid: {{ c.paid }}
+</p>
+{% endfor %}

@@ -8,5 +8,5 @@ urlpatterns = [
     path('landlord/', views.landlord_dashboard, name='landlord_dashboard'),
     path('agent/', views.agent_dashboard, name='agent_dashboard'),
     path('messages/<int:user_id>/', views.messages_view, name='messages'),
-    path('agent-dashboard/', views.agent_dashboard, name='agent_dashboard'),
+    path('apply/<int:property_id>/', views.apply_property, name='apply_property'),
 ]

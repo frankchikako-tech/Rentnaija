@@ -22,17 +22,20 @@ class Property(models.Model):
     verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-# Rental Application
-class RentalApplication(models.Model):
+# Rental application (renamed to Application)
+class Application(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='applications')
     tenant = models.ForeignKey(User, on_delete=models.CASCADE)
-    status_choices = (
+    STATUS_CHOICES = (
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
     )
-    status = models.CharField(max_length=10, choices=status_choices, default='pending')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     applied_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.tenant.username} → {self.property.title}"
 
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
@@ -46,7 +49,7 @@ class Message(models.Model):
     
 class AgentCommission(models.Model):
     agent = models.ForeignKey(User, on_delete=models.CASCADE)
-    application = models.ForeignKey(RentalApplication, on_delete=models.CASCADE)
+    application = models.ForeignKey(Application, on_delete=models.CASCADE)
     commission_amount = models.DecimalField(max_digits=10, decimal_places=2)
     paid = models.BooleanField(default=False)
 
@@ -54,10 +57,10 @@ class AgentCommission(models.Model):
         return f"{self.agent} commission"
     
 class Payment(models.Model):
-    application = models.OneToOneField(RentalApplication, on_delete=models.CASCADE)
+    application = models.OneToOneField(Application, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     confirmed = models.BooleanField(default=False)
     released_to_landlord = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-   
+

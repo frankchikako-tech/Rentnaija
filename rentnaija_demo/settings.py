@@ -125,3 +125,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # custom user model
 AUTH_USER_MODEL = 'core.User'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = 'media'

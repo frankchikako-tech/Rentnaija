@@ -1,16 +1,29 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Property, RentalApplication, Payment, User
+from .models import Property, Application, Payment, User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from .models import Message
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from .models import Property
 
 
-# Home page: list verified properties
+# Home page: list properties (all or filter verified)
 def home(request):
-    properties = Property.objects.filter(verified=True)
+    properties = Property.objects.all()
     return render(request, 'core/home.html', {'properties': properties})
+
+
+@login_required
+def apply_property(request, property_id):
+    # use Application model for applications
+    prop = get_object_or_404(Property, id=property_id)
+    Application.objects.get_or_create(
+        tenant=request.user,
+        property=prop
+    )
+    return redirect('home')
 
 # Property detail and apply
 @login_required
@@ -18,7 +31,7 @@ def property_detail(request, pk):
     prop = get_object_or_404(Property, pk=pk)
     if request.method == 'POST' and request.user.role == 'tenant':
         # Create rental application
-        app, created = RentalApplication.objects.get_or_create(property=prop, tenant=request.user)
+        app, created = Application.objects.get_or_create(property=prop, tenant=request.user)
         # Create placeholder payment
         Payment.objects.get_or_create(application=app, amount=prop.price)
         return redirect('application_detail', app_id=app.id)
@@ -27,7 +40,7 @@ def property_detail(request, pk):
 # View rental application and generate lease PDF
 @login_required
 def application_detail(request, app_id):
-    app = get_object_or_404(RentalApplication, pk=app_id)
+    app = get_object_or_404(Application, pk=app_id)
     if 'generate_pdf' in request.GET:
         # Generate simple PDF lease
         response = HttpResponse(content_type='application/pdf')
@@ -49,7 +62,7 @@ def landlord_dashboard(request):
     if request.user.role != 'landlord':
         return HttpResponse(status=403)
     properties = Property.objects.filter(landlord=request.user)
-    applications = RentalApplication.objects.filter(property__landlord=request.user)
+    applications = Application.objects.filter(property__landlord=request.user)
     return render(request, 'core/landlord_dashboard.html', {
         'properties': properties,
         'applications': applications,

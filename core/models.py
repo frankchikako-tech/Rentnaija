@@ -10,6 +10,9 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
 
+    def __str__(self):
+        return self.username
+
 # Property model
 class Property(models.Model):
     landlord = models.ForeignKey(User, on_delete=models.CASCADE, related_name='properties')
@@ -21,6 +24,8 @@ class Property(models.Model):
     image = models.ImageField(upload_to='property_images/')
     verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.title
 
 # Rental application (renamed to Application)
 class Application(models.Model):
@@ -62,35 +67,6 @@ class Payment(models.Model):
     confirmed = models.BooleanField(default=False)
     released_to_landlord = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-
-class Application(models.Model):
-
-    STATUS_CHOICES = (
-        ('pending', 'Pending'),
-        ('approved', 'Approved'),
-        ('rejected', 'Rejected'),
-    )
-
-    tenant = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="applications"
-    )
-
-    property = models.ForeignKey(
-        Property,
-        on_delete=models.CASCADE,
-        related_name="applications"
-    )
-
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default='pending'
-    )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
-        return f"{self.tenant.username} → {self.property.title}"
+        return f"Payment for {self.application}"
 
